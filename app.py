@@ -3,7 +3,7 @@ import streamlit as st
 import os
 from PIL import Image, UnidentifiedImageError
 import google.generativeai as genai
-
+import fitz 
 
 load_dotenv()
 
@@ -19,24 +19,36 @@ def get_gemini_response(input_text, image_data, prompt):
 def input_image_setup(uploaded_file):
     if uploaded_file is not None:
         bytes_data = uploaded_file.getvalue()
-        image_parts = [
-            {
-                "mime_type": uploaded_file.type,
-                "data": bytes_data
-            }
-        ]
+        if uploaded_file.type == "application/pdf":
+           
+            pdf_document = fitz.open(stream=bytes_data, filetype="pdf")
+            page = pdf_document.load_page(0)
+            pix = page.get_pixmap()
+            img_byte_arr = pix.tobytes("jpeg")
+            image_parts = [
+                {
+                    "mime_type": "image/jpeg",
+                    "data": img_byte_arr
+                }
+            ]
+        else:
+            image_parts = [
+                {
+                    "mime_type": uploaded_file.type,
+                    "data": bytes_data
+                }
+            ]
         return image_parts
     else:
         raise FileNotFoundError("No file uploaded")
+
 
 st.set_page_config(page_title="Gemini Image Demo")
 st.header("MultiInvoice Extractor")
 
 input_text = st.text_input("Input Prompt: ", key="input")
 
-
 uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
-
 
 if uploaded_file is not None:
     try:
@@ -49,7 +61,6 @@ if uploaded_file is not None:
         st.error("The uploaded file could not be identified as an image. Please upload a valid image file.")
 
 submit = st.button("Tell me about the image")
-
 
 input_prompt = """
                You are an expert in understanding invoices.
