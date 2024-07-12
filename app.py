@@ -43,8 +43,8 @@ def input_image_setup(uploaded_file):
         raise FileNotFoundError("No file uploaded")
 
 
-st.set_page_config(page_title="Gemini Image Demo")
-st.header("MultiInvoice Extractor")
+st.set_page_config(page_title="Gemini Application")
+st.header("Invoicing Origin")
 
 input_text = st.text_input("Input Prompt: ", key="input")
 
