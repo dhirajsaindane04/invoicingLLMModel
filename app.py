@@ -60,7 +60,7 @@ if uploaded_file is not None:
     except UnidentifiedImageError:
         st.error("The uploaded file could not be identified as an image. Please upload a valid image file.")
 
-submit = st.button("Tell me about the image")
+submit = st.button("Tell me about the invoice")
 
 input_prompt = """
                You are an expert in understanding invoices.
