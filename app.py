@@ -97,7 +97,9 @@ with tab2:
         "Invoice Number": "Extract the invoice number from the invoice image.",
         "Supplier Details": "Extract the supplier details from the invoice image.",
         "Buyer Details": "Extract the buyer details from the invoice image.",
-        "Item Details": "Extract the item details and make sure don't include supplier and buyer detail be specific to items and their respective information only from the invoice image."
+        "Item Details": "Extract the item details and make sure don't include supplier and buyer detail be specific to items and their respective information only from the invoice image.",
+        "Extract all data in JSON": "Extract all data in json format",
+        "Extract all data in JSON": "Extract all data in Yaml format"
     }
     submit = st.button("Tell me about the invoice")
 
