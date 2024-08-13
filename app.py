@@ -91,15 +91,15 @@ with tab1:
 with tab2:
     st.header("Extract Information")
     input_text = st.text_input("Input Prompt: ", key="input")
-    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details","extracted data in json","extracted data in yaml"]
+    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details","JSON Data","YAML Data"]
     selected_option = st.selectbox("Select the information you want to extract:", options)
     prompts = {
         "Invoice Number": "Extract the invoice number from the invoice image.",
         "Supplier Details": "Extract the supplier details from the invoice image.",
         "Buyer Details": "Extract the buyer details from the invoice image.",
         "Item Details": "Extract the item details and make sure don't include supplier and buyer detail be specific to items and their respective information only from the invoice image.",
-        "Extract all data in JSON": "Extract all data in json format",
-        "Extract all data in JSON": "Extract all data in Yaml format"
+        "JSON Data": "Extract all data in json format",
+        "YAML Data": "Extract all data in Yaml format"
     }
     submit = st.button("Tell me about the invoice")
 
