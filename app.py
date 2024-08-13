@@ -2,17 +2,12 @@ import streamlit as st
 from PIL import Image, UnidentifiedImageError
 import google.generativeai as genai
 import fitz
-import json
-import yaml
 
-def get_gemini_response(api_key, image_data, prompt):
+def get_gemini_response(api_key, input_text, image_data, prompt):
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content([image_data[0], prompt])
-    
-    result_text = response.text
-    
-    return result_text
+    response = model.generate_content([input_text, image_data[0], prompt])
+    return response.text
 
 def input_image_setup(uploaded_file):
     if uploaded_file is not None:
@@ -67,6 +62,7 @@ with st.sidebar:
         **Top K**: Controls the number of highest-probability tokens to keep for sampling.
     """)
 
+
 # Main layout with tabs
 tab1, tab2, tab3 = st.tabs(["Upload", "Extract", "Results"])
 
@@ -94,17 +90,16 @@ with tab1:
 
 with tab2:
     st.header("Extract Information")
-    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details", "Extract All Data as JSON", "Extract All Data as YAML"]
+    input_text = st.text_input("Input Prompt: ", key="input")
+    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details"]
     selected_option = st.selectbox("Select the information you want to extract:", options)
     prompts = {
         "Invoice Number": "Extract the invoice number from the invoice image.",
         "Supplier Details": "Extract the supplier details from the invoice image.",
         "Buyer Details": "Extract the buyer details from the invoice image.",
-        "Item Details": "Extract the item details and make sure don't include supplier and buyer detail be specific to items and their respective information only from the invoice image.",
-        "Extract All Data as JSON": "Extract all data from the invoice image in JSON structured format.",
-        "Extract All Data as YAML": "Extract all data from the invoice image in YAML structured format."
+        "Item Details": "Extract the item details and make sure don't include supplier and buyer detail be specific to items and their respective information only from the invoice image."
     }
-    submit = st.button("Extract Information")
+    submit = st.button("Tell me about the invoice")
 
     if submit and api_key and selected_option != "Select an option":
         # JavaScript to switch tabs
@@ -126,8 +121,7 @@ if submit and api_key and selected_option != "Select an option":
         try:
             image_data = input_image_setup(uploaded_file)
             input_prompt = prompts[selected_option]
-            # output_format = "JSON" if "JSON" in selected_option else "YAML" if "YAML" in selected_option else None
-            response = get_gemini_response(api_key, image_data, input_prompt)
+            response = get_gemini_response(api_key, input_text, image_data, input_prompt)
             result_placeholder.subheader("The Response is")
             result_placeholder.write(response)
         except Exception as e:
