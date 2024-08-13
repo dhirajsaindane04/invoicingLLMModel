@@ -3,10 +3,10 @@ from PIL import Image, UnidentifiedImageError
 import google.generativeai as genai
 import fitz
 
-def get_gemini_response(api_key, input_text, image_data, prompt):
+def get_gemini_response(api_key, image_data, prompt):
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content([input_text, image_data[0], prompt])
+    response = model.generate_content([image_data[0], prompt])
     return response.text
 
 def input_image_setup(uploaded_file):
@@ -90,8 +90,7 @@ with tab1:
 
 with tab2:
     st.header("Extract Information")
-    input_text = st.text_input("Input Prompt: ", key="input")
-    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details","JSON Data","YAML Data"]
+    options = ["Select an option", "Invoice Number", "Supplier Details", "Buyer Details", "Item Details", "JSON Data", "YAML Data"]
     selected_option = st.selectbox("Select the information you want to extract:", options)
     prompts = {
         "Invoice Number": "Extract the invoice number from the invoice image.",
@@ -123,7 +122,7 @@ if submit and api_key and selected_option != "Select an option":
         try:
             image_data = input_image_setup(uploaded_file)
             input_prompt = prompts[selected_option]
-            response = get_gemini_response(api_key, input_text, image_data, input_prompt)
+            response = get_gemini_response(api_key, image_data, input_prompt)
             result_placeholder.subheader("The Response is")
             result_placeholder.write(response)
         except Exception as e:
